@@ -1,6 +1,6 @@
-import { Client } from 'whatsapp-web.js';
-import fs from 'fs';
-import qrcode from 'qrcode-terminal';
+const { Client } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+const fs = require('fs');
 
 const SESSION_FILE_PATH = './session.json';
 let client;
@@ -57,5 +57,3 @@ const listenMessage = () => {
 
 // Verificamos si existe el archivo de sesión
 (fs.existsSync(SESSION_FILE_PATH)) ? withSession() : withoutSession();
-
-export default withSession;
