@@ -1,5 +1,4 @@
 import { Client } from 'whatsapp-web.js';
-import ora from 'ora';
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
 
@@ -9,9 +8,8 @@ let sessionData;
 
 const withSession = () => {
     // Si existe cargamos el archivo con las credenciales
-    const spinner = ora('Cargando sesión...');
+    console.log('Cargando sesión...');
     sessionData = require(SESSION_FILE_PATH);
-    spinner.start();
 
     client = new Client({
         session: sessionData
@@ -23,8 +21,6 @@ const withSession = () => {
     });
 
     client.on('auth_failure', () => {
-        console.log('Error de autenticación, generando nuevo QR...');
-        spinner.stop();
         console.log('** Error de autenticación vuelve a generar el QRCODE (Borrar el archivo session.js) **');
     });
 
@@ -53,12 +49,9 @@ const withoutSession = () => {
 };
 
 const listenMessage = () => {
-    client.on('message', async msg => {
+    client.on('message', msg => {
         const { from, to, body } = msg;
         console.log(from, to, body);
-        if (body === 'Hola') {
-            client.sendMessage(from, 'Hola, ¿Cómo estás?');
-        }
     });
 };
 
