@@ -9,9 +9,9 @@ let sessionData;
 
 const withSession = () => {
     // Si existe cargamos el archivo con las credenciales
-    const spinner = ora('Cargando sesión...').start();
+    const spinner = ora('Cargando sesión...');
     sessionData = require(SESSION_FILE_PATH);
-    spinner.succeed();
+    spinner.start();
 
     client = new Client({
         session: sessionData
@@ -24,8 +24,8 @@ const withSession = () => {
 
     client.on('auth_failure', () => {
         console.log('Error de autenticación, generando nuevo QR...');
-        fs.unlinkSync(SESSION_FILE_PATH);
-        withoutSession();
+        spinner.stop();
+        console.log('** Error de autenticación vuelve a generar el QRCODE (Borrar el archivo session.js) **');
     });
 
     client.initialize();
@@ -40,6 +40,7 @@ const withoutSession = () => {
     });
 
     client.on('authenticated', (session) => {
+        // Guardamos credenciales de la sesión para usar luego
         sessionData = session;
         fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
             if (err) {
